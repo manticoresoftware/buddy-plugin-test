@@ -11,22 +11,22 @@
 
 namespace Manticoresearch\Buddy\Plugin\Test;
 
-use Manticoresearch\Buddy\Core\Network\Request as NetworkRequest;
-use Manticoresearch\Buddy\Core\Plugin\Request as BaseRequest;
+use Manticoresearch\Buddy\Core\Network\Request;
+use Manticoresearch\Buddy\Core\Plugin\BasePayload;
 
 /**
  * Request for Backup command that has parsed parameters from SQL
  */
-final class Request extends BaseRequest {
+final class Payload extends BasePayload {
 
 	public function __construct(public int $timeout = 0, public bool $isDeferred = false) {
 	}
 
 	/**
-	 * @param NetworkRequest $request
+	 * @param Request $request
 	 * @return static
 	 */
-	public static function fromNetworkRequest(NetworkRequest $request): static {
+	public static function fromRequest(Request $request): static {
 		// Request for Test command emulating hung Buddy requests
 		// Contains info on request timeout and the type of the command's Task(deferred or not)
 		// E.g.: test 6/deferred ; test 10 ; test deferred
@@ -40,10 +40,10 @@ final class Request extends BaseRequest {
 	}
 
 	/**
-	 * @param NetworkRequest $request
+	 * @param Request $request
 	 * @return bool
 	 */
-	public static function hasMatch(NetworkRequest $request): bool {
+	public static function hasMatch(Request $request): bool {
 		return stripos($request->payload, 'test') === 0;
 	}
 }
