@@ -45,7 +45,7 @@ final class Handler extends BaseHandler {
 
 		$taskFn = static function (int $timeout): TaskResult {
 			sleep($timeout);
-			return new TaskResult([[]]);
+			return TaskResult::none();
 		};
 
 		$createMethod = $this->payload->isDeferred ? 'deferInRuntime' : 'createInRuntime';
