@@ -16,7 +16,6 @@ use Manticoresearch\Buddy\Core\Plugin\BaseHandler;
 use Manticoresearch\Buddy\Core\Task\Task;
 use Manticoresearch\Buddy\Core\Task\TaskResult;
 use RuntimeException;
-use parallel\Runtime;
 
 /**
  * This is the parent class to handle erroneous Manticore queries
@@ -41,15 +40,18 @@ final class Handler extends BaseHandler {
 	 * @return Task
 	 * @throws RuntimeException
 	 */
-	public function run(Runtime $runtime): Task {
+	public function run(): Task {
 
 		$taskFn = static function (int $timeout): TaskResult {
 			sleep($timeout);
 			return TaskResult::none();
 		};
 
-		$createMethod = $this->payload->isDeferred ? 'deferInRuntime' : 'createInRuntime';
-		return Task::$createMethod($runtime, $taskFn, [$this->payload->timeout])->run();
+		$task = Task::create($taskFn, [$this->payload->timeout]);
+		if ($this->payload->isDeferred) {
+			$task->defer();
+		}
+		return $task->run();
 	}
 
 	/**
