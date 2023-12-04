@@ -43,7 +43,10 @@ final class Handler extends BaseHandler {
 	 */
 	public function run(): Task {
 		$taskFn = static function (int $timeout): TaskResult {
-			Coroutine::sleep($timeout);
+			if ($timeout > 0) {
+				Coroutine::sleep($timeout);
+			}
+
 			return TaskResult::none();
 		};
 
